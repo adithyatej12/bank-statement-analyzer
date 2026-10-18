@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { analyzeCSV } from "./analyzer.js";
 
 const inr = (n) =>
   "₹" + Number(n || 0).toLocaleString("en-IN", { maximumFractionDigits: 2 });
@@ -13,9 +14,9 @@ export default function App() {
     setLoading(true);
     setError("");
     try {
-      const res = await fetch("/api/sample");
-      if (!res.ok) throw new Error("Backend not reachable. Start it with: uvicorn app:app --reload");
-      setData(await res.json());
+      const res = await fetch("sample_statement.csv");
+      if (!res.ok) throw new Error("Could not load sample data.");
+      setData(analyzeCSV(await res.text()));
       setFilter("All");
     } catch (e) {
       setError(e.message);
@@ -30,17 +31,14 @@ export default function App() {
     setLoading(true);
     setError("");
     try {
-      const form = new FormData();
-      form.append("file", file);
-      const res = await fetch("/api/analyze", { method: "POST", body: form });
-      const body = await res.json();
-      if (!res.ok) throw new Error(body.detail || "Failed to analyze");
-      setData(body);
+      const text = await file.text();
+      setData(analyzeCSV(text));
       setFilter("All");
     } catch (err) {
       setError(err.message);
     } finally {
       setLoading(false);
+      e.target.value = "";
     }
   };
 

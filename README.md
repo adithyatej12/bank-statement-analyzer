@@ -1,10 +1,17 @@
 # Bank Statement Analyzer
 
+**Live demo:** https://bank-statement-analyzer.adithyatej2002.workers.dev
+
 Upload a bank statement CSV → transactions get auto-categorized with regex rules → monthly summaries, spending-by-category breakdown, and a searchable transaction table.
 
 Built as a Citi-interview portfolio project (finance domain, Python regex, REST API, React).
 
-## Run it
+## How it's built
+
+- `backend/` — FastAPI REST API (`POST /api/analyze`, `GET /api/sample`, `GET /api/rules`). Run locally with uvicorn; the regex engine lives in `categorizer.py`.
+- `frontend/` — React + Vite UI. The **live demo is a static build**: the exact same categorization logic is ported to `src/analyzer.js` so everything runs in the browser with zero backend. The `/api` backend remains the reference implementation and works with the UI in local dev.
+
+## Run it locally
 
 **Backend** (FastAPI):
 ```bash
